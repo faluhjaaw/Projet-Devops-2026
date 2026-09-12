@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: open-webui-config
+  namespace: {{ .Values.namespace }}
+  labels:
+    app: open-webui
+data:
+  OLLAMA_BASE_URL: "http://ollama:{{ .Values.ollama.service.port }}"

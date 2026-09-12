@@ -1,0 +1,53 @@
+namespace: llm
+
+ollama:
+  image: ollama/ollama:latest
+  service:
+    port: 11434
+  storage:
+    size: 10Gi
+  resources:
+    requests:
+      cpu: 500m
+      memory: 3Gi
+    limits:
+      cpu: "2"
+      memory: 6Gi
+
+openWebui:
+  image: ghcr.io/open-webui/open-webui:main
+  replicas: 1
+  service:
+    port: 3000
+    targetPort: 8080
+    nodePort: 31000
+  storage:
+    size: 5Gi
+  resources:
+    requests:
+      cpu: 250m
+      memory: 512Mi
+    limits:
+      cpu: "1"
+      memory: 2Gi
+
+ingress:
+  enabled: true
+  className: nginx
+  host: open-webui.local
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+
+networkPolicy:
+  enabled: true
+
+podDisruptionBudget:
+  enabled: true
+  maxUnavailable: 0
+
+autoscaling:
+  enabled: false
+  minReplicas: 2
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
